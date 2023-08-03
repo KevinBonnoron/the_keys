@@ -10,6 +10,6 @@
   "issue_tracker": "https://github.com/KevinBonnoron/the_keys/issues",
   "version": "0.0.1",
   "requirements": [
-    "the-keyspy==0.0.11"
+    "the-keyspy==0.0.12"
   ]
 }
