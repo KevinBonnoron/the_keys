@@ -1,4 +1,5 @@
-from homeassistant.components.sensor import SensorDeviceClass, SensorEntity, SensorStateClass
+from homeassistant.components.sensor import (SensorDeviceClass, SensorEntity,
+                                             SensorStateClass)
 from homeassistant.const import PERCENTAGE
 from the_keyspy import TheKeysLock
 
@@ -8,11 +9,11 @@ from .const import DOMAIN
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
     """Set up TheKeys lock devices."""
-    the_keys_api = hass.data[DOMAIN]
+    devices = hass.data[DOMAIN]
 
     entities = []
 
-    for device in await hass.async_add_executor_job(the_keys_api.get_devices):
+    for device in devices:
         if isinstance(device, TheKeysLock):
             entities.append(TheKeysLockBattery(device))
 
@@ -20,10 +21,10 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 
 
 class TheKeysLockBattery(TheKeysEntity, SensorEntity):
+    """TheKeys battery device implementation."""
+
     def __init__(self, device: TheKeysLock):
         super().__init__(device=device)
-        self.type = "battery"
-        self._device = device
         self._attr_device_class = SensorDeviceClass.BATTERY
         self._attr_state_class = SensorStateClass.MEASUREMENT
         self._attr_native_unit_of_measurement = PERCENTAGE
@@ -39,3 +40,7 @@ class TheKeysLockBattery(TheKeysEntity, SensorEntity):
         """Return battery level."""
         # usable_battery_level matches thekeys app
         return self._device.battery_level
+
+    @property
+    def type(self) -> str:
+        return "battery"

@@ -1,4 +1,4 @@
-from homeassistant.helpers.entity import Entity
+from homeassistant.helpers.entity import DeviceInfo, Entity
 from the_keyspy import TheKeysDevice
 
 from .const import DOMAIN
@@ -10,6 +10,8 @@ class TheKeysEntity(Entity):
     def __init__(self, device: TheKeysDevice):
         """Init a TheKeys entity."""
         self._device = device
+        self._attr_unique_id = f"{device.id} {self.type}"
+        self._attr_name = self.type.capitalize()
 
     @property
     def available(self):
@@ -22,11 +24,5 @@ class TheKeysEntity(Entity):
         return self._device.id
 
     @property
-    def device_info(self):
-        """Return the device_info of the device."""
-        return {
-            "identifiers": {(DOMAIN, self.unique_id)},
-            "manufacturer": "The Keys",
-            "name": self.name,
-            "device_type": "Lock",
-        }
+    def type(self) -> str:
+        return None

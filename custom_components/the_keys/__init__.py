@@ -14,7 +14,9 @@ PLATFORMS = ["lock", "sensor"]
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up The Keys from a config entry."""
 
-    hass.data[DOMAIN] = await hass.async_add_executor_job(TheKeysApi, entry.data.get(CONF_USERNAME), entry.data.get(CONF_PASSWORD))
+    api = TheKeysApi(entry.data.get(CONF_USERNAME),
+                     entry.data.get(CONF_PASSWORD))
+    hass.data[DOMAIN] = await hass.async_add_executor_job(api.get_devices)
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
 
     return True
