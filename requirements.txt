@@ -1,2 +1,2 @@
 homeassistant==2023.4.6
-the-keyspy==0.0.12
+the-keyspy==0.0.13
