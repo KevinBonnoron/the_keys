@@ -1,4 +1,4 @@
-from homeassistant.helpers.entity import DeviceInfo, Entity
+from homeassistant.helpers.entity import Entity
 from the_keyspy import TheKeysDevice
 
 from .const import DOMAIN
@@ -14,9 +14,9 @@ class TheKeysEntity(Entity):
         self._attr_name = self.type.capitalize()
 
     @property
-    def available(self):
+    def available(self) -> bool:
         """Return the available state."""
-        return self._device.status()
+        return self._device is not None
 
     @property
     def unique_id(self) -> str:
