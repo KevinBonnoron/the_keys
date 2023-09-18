@@ -1,17 +1,15 @@
+"""Base classes."""
 from homeassistant.helpers.entity import Entity
 from the_keyspy import TheKeysDevice
 
-from .const import DOMAIN
-
 
 class TheKeysEntity(Entity):
-    """Representation of a the_keys entity"""
+    """Representation of a the_keys entity."""
 
     def __init__(self, device: TheKeysDevice):
         """Init a TheKeys entity."""
         self._device = device
-        self._attr_unique_id = f"{device.id} {self.type}"
-        self._attr_name = self.type.capitalize()
+        self._attr_name = device.name
 
     @property
     def available(self) -> bool:
@@ -22,7 +20,3 @@ class TheKeysEntity(Entity):
     def unique_id(self) -> str:
         """Return a unique ID."""
         return self._device.id
-
-    @property
-    def type(self) -> str:
-        return None

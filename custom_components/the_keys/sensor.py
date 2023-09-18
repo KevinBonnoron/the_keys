@@ -1,4 +1,6 @@
-from homeassistant.components.sensor import (SensorDeviceClass, SensorEntity, SensorStateClass)
+"""Sensor platform for the_keys."""
+from homeassistant.components.sensor import (SensorDeviceClass, SensorEntity,
+                                             SensorStateClass)
 from homeassistant.const import PERCENTAGE
 from the_keyspy import TheKeysLock
 
@@ -23,6 +25,7 @@ class TheKeysLockBattery(TheKeysEntity, SensorEntity):
     """TheKeys battery device implementation."""
 
     def __init__(self, device: TheKeysLock):
+        """Init a TheKeys battery entity."""
         super().__init__(device=device)
         self._attr_device_class = SensorDeviceClass.BATTERY
         self._attr_state_class = SensorStateClass.MEASUREMENT
@@ -37,9 +40,4 @@ class TheKeysLockBattery(TheKeysEntity, SensorEntity):
     @property
     def native_value(self) -> int:
         """Return battery level."""
-        # usable_battery_level matches thekeys app
         return self._device.battery_level
-
-    @property
-    def type(self) -> str:
-        return "battery"
