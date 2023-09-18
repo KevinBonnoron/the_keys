@@ -1,7 +1,6 @@
 """The Keys Lock device."""
 from homeassistant.components.lock import LockEntity
-from homeassistant.components.sensor import (SensorDeviceClass, SensorEntity,
-                                             SensorStateClass)
+from homeassistant.components.sensor import (SensorDeviceClass, SensorEntity, SensorStateClass)
 from the_keyspy import TheKeysLock
 
 from .base import TheKeysEntity
@@ -18,7 +17,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
         if isinstance(device, TheKeysLock):
             entities.append(TheKeysLockEntity(device))
 
-    async_add_entities(entities)
+    async_add_entities(entities, update_before_add=True)
 
 
 class TheKeysLockEntity(TheKeysEntity, LockEntity):
@@ -29,15 +28,13 @@ class TheKeysLockEntity(TheKeysEntity, LockEntity):
 
     def lock(self, **kwargs):
         """Lock the device."""
-        self._attr_is_locking = True
         self._device.close()
-        self._attr_is_locking = False
+        self.async_write_ha_state()
 
     def unlock(self, **kwargs):
         """Unlock the device."""
-        self._attr_is_unlocking = True
         self._device.open()
-        self._attr_is_unlocking = False
+        self.async_write_ha_state()
 
     def update(self) -> None:
         """Update the device."""

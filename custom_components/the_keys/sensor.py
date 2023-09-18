@@ -1,5 +1,4 @@
-from homeassistant.components.sensor import (SensorDeviceClass, SensorEntity,
-                                             SensorStateClass)
+from homeassistant.components.sensor import (SensorDeviceClass, SensorEntity, SensorStateClass)
 from homeassistant.const import PERCENTAGE
 from the_keyspy import TheKeysLock
 
