@@ -8,7 +8,6 @@
 ![Project Maintenance][maintenance-shield]
 [![BuyMeCoffee][buymecoffeebadge]][buymecoffee]
 
-[![Discord][discord-shield]][discord]
 [![Community Forum][forum-shield]][forum]
 
 _Integration to integrate with [KevinBonnoron/the_keys][KevinBonnoron/the_keys]._
@@ -17,9 +16,8 @@ _Integration to integrate with [KevinBonnoron/the_keys][KevinBonnoron/the_keys].
 
 Platform | Description
 -- | --
-`binary_sensor` | Show something `True` or `False`.
-`sensor` | Show info from blueprint API.
-`switch` | Switch something `True` or `False`.
+`lock` | Allow to change and see the lock status.
+`sensor` | Show battery info.
 
 ## Installation
 
@@ -29,7 +27,7 @@ Platform | Description
 4. Download _all_ the files from the `custom_components/the_keys/` directory (folder) in this repository.
 5. Place the files you downloaded in the new directory (folder) you created.
 6. Restart Home Assistant
-7. In the HA UI go to "Configuration" -> "Integrations" click "+" and search for "Integration blueprint"
+7. In the HA UI go to "Configuration" -> "Integrations" click "+" and search for "The Keys"
 
 ## Configuration is done in the UI
 
