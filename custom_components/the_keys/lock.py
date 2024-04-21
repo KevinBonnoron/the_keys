@@ -29,10 +29,12 @@ class TheKeysLockEntity(TheKeysEntity, LockEntity):
     def lock(self, **kwargs):
         """Lock the device."""
         self._device.close()
+        self._attr_is_locked = True
 
     def unlock(self, **kwargs):
         """Unlock the device."""
         self._device.open()
+        self._attr_is_locked = False
 
     def update(self) -> None:
         """Update the device."""
