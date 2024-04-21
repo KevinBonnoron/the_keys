@@ -15,7 +15,7 @@ cryptography==41.0.3
 frozenlist==1.4.0
 h11==0.14.0
 home-assistant-bluetooth==1.10.3
-homeassistant==2023.9.1
+homeassistant==2023.12.3
 httpcore==0.17.3
 httpx==0.24.1
 idna==3.4
