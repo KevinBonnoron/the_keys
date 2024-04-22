@@ -5,7 +5,7 @@ astral==2.2
 async-timeout==4.0.3
 atomicwrites-homeassistant==1.4.1
 attrs==23.1.0
-awesomeversion==22.9.0
+awesomeversion==24.2.0
 bcrypt==4.0.1
 certifi==2023.7.22
 cffi==1.15.1
