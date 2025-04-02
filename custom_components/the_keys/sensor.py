@@ -16,7 +16,8 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 
     for device in devices:
         if isinstance(device, TheKeysLock):
-            entities.append(TheKeysLockBattery(device))
+            if device.battery_level is not None:
+                entities.append(TheKeysLockBattery(device))
 
     async_add_entities(entities)
 
