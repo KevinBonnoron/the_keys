@@ -1,9 +1,13 @@
 """The Keys Lock device."""
+import logging
+
 from homeassistant.components.lock import LockEntity
 from the_keyspy import TheKeysLock
 
 from .base import TheKeysEntity
 from .const import DOMAIN
+
+_LOGGER = logging.getLogger(__name__)
 
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
@@ -38,5 +42,8 @@ class TheKeysLockEntity(TheKeysEntity, LockEntity):
 
     def update(self) -> None:
         """Update the device."""
-        self._device.retrieve_infos()
-        self._attr_is_locked = self._device.is_locked
+        try:
+            self._device.retrieve_infos()
+            self._attr_is_locked = self._device.is_locked
+        except Exception as e:
+            _LOGGER.error("Error updating lock: %s", e)

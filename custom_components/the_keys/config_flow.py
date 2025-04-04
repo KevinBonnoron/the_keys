@@ -6,13 +6,15 @@ from typing import Any
 
 import voluptuous as vol
 from homeassistant import config_entries
-from homeassistant.const import CONF_PASSWORD, CONF_USERNAME
+from homeassistant.const import (CONF_PASSWORD, CONF_SCAN_INTERVAL,
+                                 CONF_USERNAME)
 from homeassistant.core import HomeAssistant
 from homeassistant.data_entry_flow import FlowResult
 from homeassistant.exceptions import HomeAssistantError
+from homeassistant.helpers import config_validation as cv
 from the_keyspy import TheKeysApi
 
-from .const import DOMAIN
+from .const import DEFAULT_SCAN_INTERVAL, DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -21,7 +23,7 @@ STEP_USER_DATA_SCHEMA = vol.Schema(
     {
         vol.Required(CONF_USERNAME): str,
         vol.Required(CONF_PASSWORD): str,
-        # vol.Optional(CONF_SCAN_INTERVAL, default=DEFAULT_SCAN_INTERVAL): cv.time_period,
+        vol.Optional(CONF_SCAN_INTERVAL, default=DEFAULT_SCAN_INTERVAL): cv.time_period,
     }
 )
 
@@ -50,7 +52,7 @@ async def validate_input(hass: HomeAssistant, data: dict[str, Any]) -> dict[str,
     return {
         CONF_USERNAME: data[CONF_USERNAME],
         CONF_PASSWORD: data[CONF_PASSWORD],
-        # CONF_SCAN_INTERVAL: data[CONF_SCAN_INTERVAL],
+        CONF_SCAN_INTERVAL: data[CONF_SCAN_INTERVAL],
     }
 
 
