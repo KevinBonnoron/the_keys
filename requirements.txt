@@ -51,7 +51,7 @@ pyasn1==0.4.8
 pycognito==2023.5.0
 pycparser==2.22
 PyJWT==2.8.0
-pyOpenSSL==24.0.0
+pyOpenSSL==25.0.0
 pyRFC3339==2.0.1
 PyRIC==0.1.6.3
 python-dateutil==2.9.0.post0
