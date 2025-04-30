@@ -1,5 +1,5 @@
 acme==2.8.0
-aiohttp==3.9.3
+aiohttp==3.11.0b0
 aiohttp-cors==0.7.0
 aiohttp-fast-url-dispatcher==0.3.0
 aiohttp-zlib-ng==0.3.1
