@@ -11,7 +11,7 @@ async-interrupt==1.1.1
 async-timeout==5.0.1
 atomicwrites-homeassistant==1.4.1
 attrs==23.2.0
-awesomeversion==24.2.0
+awesomeversion==24.6.0
 bcrypt==4.1.2
 bleak==0.22.3
 bleak-retry-connector==3.9.0
