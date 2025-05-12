@@ -4,4 +4,5 @@ from datetime import timedelta
 from typing import Final
 
 DOMAIN: Final = "the_keys"
-DEFAULT_SCAN_INTERVAL: Final = timedelta(minutes=1)
+MIN_SCAN_INTERVAL = 10
+DEFAULT_SCAN_INTERVAL: Final = timedelta(minutes=1).total_seconds()

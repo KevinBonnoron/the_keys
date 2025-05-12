@@ -1,0 +1,13 @@
+pytest==8.0.2
+pytest-aiohttp==1.0.5
+pytest-asyncio==0.23.5
+pytest-cov==4.1.0
+pytest-homeassistant-custom-component==0.13.109
+pytest-picked==0.5.0
+pytest-socket==0.7.0
+pytest-sugar==1.0.0
+pytest-test-groups==1.0.3
+pytest-timeout==2.2.0
+pytest-unordered==0.5.2
+pytest-xdist==3.3.1
+pytest_freezer==0.4.8

@@ -14,16 +14,15 @@ from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers import config_validation as cv
 from the_keyspy import TheKeysApi
 
-from .const import DEFAULT_SCAN_INTERVAL, DOMAIN
+from .const import DEFAULT_SCAN_INTERVAL, DOMAIN, MIN_SCAN_INTERVAL
 
 _LOGGER = logging.getLogger(__name__)
 
-# TODO adjust the data schema to the data that you need
 STEP_USER_DATA_SCHEMA = vol.Schema(
     {
         vol.Required(CONF_USERNAME): str,
         vol.Required(CONF_PASSWORD): str,
-        vol.Optional(CONF_SCAN_INTERVAL, default=DEFAULT_SCAN_INTERVAL): cv.time_period,
+        vol.Optional(CONF_SCAN_INTERVAL, default=DEFAULT_SCAN_INTERVAL): vol.All(cv.positive_int, vol.Clamp(min=MIN_SCAN_INTERVAL)),
     }
 )
 
@@ -33,22 +32,32 @@ async def validate_input(hass: HomeAssistant, data: dict[str, Any]) -> dict[str,
 
     Data has the keys from STEP_USER_DATA_SCHEMA with values provided by the user.
     """
-    # TODO validate the data can be used to set up a connection.
 
-    # If your PyPI package is not built with async, pass your methods
-    # to the executor:
-    # await hass.async_add_executor_job(
-    #     your_validate_func, data["username"], data["password"]
-    # )
+    # Validate phone number format
+    username = data[CONF_USERNAME]
+    if not username.startswith('+'):
+        if username.startswith('0'):
+            _LOGGER.debug(
+                "Converting phone number starting with 0 to international format")
+            username = '+33' + username[1:]
+            data[CONF_USERNAME] = username
+        else:
+            _LOGGER.error("Phone number must start with + or 0")
+            raise InvalidPhoneNumber
 
-    await hass.async_add_executor_job(TheKeysApi, data[CONF_USERNAME], data[CONF_PASSWORD])
+    if not username[1:].isdigit():
+        _LOGGER.error("Phone number must contain only digits after the + sign")
+        raise InvalidPhoneNumber
 
-    # If you cannot connect:
-    # throw CannotConnect
-    # If the authentication is wrong:
-    # InvalidAuth
+    try:
+        api = await hass.async_add_executor_job(
+            TheKeysApi, data[CONF_USERNAME], data[CONF_PASSWORD]
+        )
+        await hass.async_add_executor_job(api.get_devices)
+    except Exception as err:
+        _LOGGER.error("Error when setting up The Keys API: %s", err)
+        raise CannotConnect from err
 
-    # Return info that you want to store in the config entry.
     return {
         CONF_USERNAME: data[CONF_USERNAME],
         CONF_PASSWORD: data[CONF_PASSWORD],
@@ -56,40 +65,50 @@ async def validate_input(hass: HomeAssistant, data: dict[str, Any]) -> dict[str,
     }
 
 
+async def async_migrate_entry(hass: HomeAssistant, config_entry: config_entries.ConfigEntry) -> bool:
+    """Migrate old entry to new."""
+    pass
+
+
 class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     """Handle a config flow for The Keys."""
 
     VERSION = 1
+    MINOR_VERSION = 1
 
     async def async_step_import(self, import_config):
         """Import a config entry from configuration.yaml."""
         return await self.async_step_user(import_config)
 
-    async def async_step_user(self, user_input: dict[str, Any] | None = None) -> FlowResult:
+    async def async_step_user(
+        self, user_input: dict[str, Any] | None = None
+    ) -> FlowResult:
         """Handle the initial step."""
-        if user_input is None:
-            return self.async_show_form(step_id="user", data_schema=STEP_USER_DATA_SCHEMA)
-
         errors = {}
 
-        try:
-            info = await validate_input(self.hass, user_input)
-        except CannotConnect:
-            errors["base"] = "cannot_connect"
-        except InvalidAuth:
-            errors["base"] = "invalid_auth"
-        except Exception:  # pylint: disable=broad-except
-            _LOGGER.exception("Unexpected exception")
-            errors["base"] = "unknown"
-        else:
-            return self.async_create_entry(title=info[CONF_USERNAME], data=info)
+        if user_input is not None:
+            try:
+                info = await validate_input(self.hass, user_input)
+            except CannotConnect:
+                errors["base"] = "cannot_connect"
+            except InvalidPhoneNumber:
+                errors["base"] = "invalid_phone_number"
+            except Exception:  # pylint: disable=broad-except
+                _LOGGER.exception("Unexpected exception")
+                errors["base"] = "unknown"
+            else:
+                return self.async_create_entry(title=info[CONF_USERNAME], data=info)
 
-        return self.async_show_form(step_id="user", data_schema=STEP_USER_DATA_SCHEMA, errors=errors)
+        return self.async_show_form(
+            step_id="user",
+            data_schema=STEP_USER_DATA_SCHEMA,
+            errors=errors,
+        )
 
 
 class CannotConnect(HomeAssistantError):
     """Error to indicate we cannot connect."""
 
 
-class InvalidAuth(HomeAssistantError):
-    """Error to indicate there is invalid auth."""
+class InvalidPhoneNumber(HomeAssistantError):
+    """Error to indicate the phone number is invalid."""
