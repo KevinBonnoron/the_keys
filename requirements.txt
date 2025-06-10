@@ -78,7 +78,7 @@ python-jose==3.4.0
 python-slugify==8.0.4
 pytz==2025.2
 PyYAML==6.0.1
-requests==2.31.0
+requests==2.32.4
 requests-mock==1.11.0
 respx==0.20.2
 rsa==4.9.1
