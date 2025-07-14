@@ -28,10 +28,7 @@ async def async_setup_coordinator(hass: HomeAssistant, entry: ConfigEntry) -> Da
     async def async_update_data():
         """Fetch data from API."""
         try:
-            # Récupérer les devices de manière asynchrone
             devices = await hass.async_add_executor_job(api.get_devices)
-
-            # Mettre à jour uniquement les serrures
             for device in devices:
                 if isinstance(device, TheKeysLock):
                     await hass.async_add_executor_job(device.retrieve_infos)
