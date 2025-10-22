@@ -6,3 +6,4 @@ from typing import Final
 DOMAIN: Final = "the_keys"
 MIN_SCAN_INTERVAL = 10
 DEFAULT_SCAN_INTERVAL: Final = timedelta(minutes=1).total_seconds()
+CONF_GATEWAY_IP: Final = "gateway_ip"

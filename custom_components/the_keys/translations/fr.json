@@ -11,9 +11,9 @@
         "step": {
             "user": {
                 "data": {
-                    "host": "H\u00f4te",
+                    "username": "Nom d'utilisateur",
                     "password": "Mot de passe",
-                    "username": "Nom d'utilisateur"
+                    "gateway_ip": "Adresse IP de la gateway"
                 }
             }
         }

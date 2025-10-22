@@ -11,7 +11,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 from the_keyspy import TheKeysApi, TheKeysLock
 
-from .const import DEFAULT_SCAN_INTERVAL, DOMAIN
+from .const import CONF_GATEWAY_IP, DEFAULT_SCAN_INTERVAL, DOMAIN
 
 PLATFORMS: list[Platform] = [Platform.LOCK, Platform.SENSOR]
 
@@ -22,7 +22,8 @@ async def async_setup_coordinator(hass: HomeAssistant, entry: ConfigEntry) -> Da
     """Set up the coordinator."""
     api = TheKeysApi(
         entry.data[CONF_USERNAME],
-        entry.data[CONF_PASSWORD]
+        entry.data[CONF_PASSWORD],
+        entry.data[CONF_GATEWAY_IP] or None,
     )
 
     async def async_update_data():

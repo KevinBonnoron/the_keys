@@ -8,13 +8,14 @@ import voluptuous as vol
 from homeassistant import config_entries
 from homeassistant.const import (CONF_PASSWORD, CONF_SCAN_INTERVAL,
                                  CONF_USERNAME)
+import ipaddress
 from homeassistant.core import HomeAssistant
 from homeassistant.data_entry_flow import FlowResult
 from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers import config_validation as cv
 from the_keyspy import TheKeysApi
 
-from .const import DEFAULT_SCAN_INTERVAL, DOMAIN, MIN_SCAN_INTERVAL
+from .const import DEFAULT_SCAN_INTERVAL, DOMAIN, MIN_SCAN_INTERVAL, CONF_GATEWAY_IP
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -22,6 +23,7 @@ STEP_USER_DATA_SCHEMA = vol.Schema(
     {
         vol.Required(CONF_USERNAME): str,
         vol.Required(CONF_PASSWORD): str,
+        vol.Optional(CONF_GATEWAY_IP): str,
         vol.Optional(CONF_SCAN_INTERVAL, default=DEFAULT_SCAN_INTERVAL): vol.All(cv.positive_int, vol.Clamp(min=MIN_SCAN_INTERVAL)),
     }
 )
@@ -49,6 +51,13 @@ async def validate_input(hass: HomeAssistant, data: dict[str, Any]) -> dict[str,
         _LOGGER.error("Phone number must contain only digits after the + sign")
         raise InvalidPhoneNumber
 
+    if CONF_GATEWAY_IP in data and data[CONF_GATEWAY_IP]:
+        try:
+            ipaddress.ip_address(data[CONF_GATEWAY_IP])
+        except ValueError:
+            _LOGGER.error("Invalid IP address format for gateway")
+            raise InvalidGatewayIP
+
     try:
         api = await hass.async_add_executor_job(
             TheKeysApi, data[CONF_USERNAME], data[CONF_PASSWORD]
@@ -62,6 +71,7 @@ async def validate_input(hass: HomeAssistant, data: dict[str, Any]) -> dict[str,
         CONF_USERNAME: data[CONF_USERNAME],
         CONF_PASSWORD: data[CONF_PASSWORD],
         CONF_SCAN_INTERVAL: data[CONF_SCAN_INTERVAL],
+        CONF_GATEWAY_IP: data.get(CONF_GATEWAY_IP),
     }
 
 
@@ -93,6 +103,8 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 errors["base"] = "cannot_connect"
             except InvalidPhoneNumber:
                 errors["base"] = "invalid_phone_number"
+            except InvalidGatewayIP:
+                errors["base"] = "invalid_gateway_ip"
             except Exception:  # pylint: disable=broad-except
                 _LOGGER.exception("Unexpected exception")
                 errors["base"] = "unknown"
@@ -112,3 +124,7 @@ class CannotConnect(HomeAssistantError):
 
 class InvalidPhoneNumber(HomeAssistantError):
     """Error to indicate the phone number is invalid."""
+
+
+class InvalidGatewayIP(HomeAssistantError):
+    """Error to indicate the gateway IP is invalid."""

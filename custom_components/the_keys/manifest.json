@@ -10,7 +10,7 @@
   "issue_tracker": "https://github.com/KevinBonnoron/the_keys/issues",
   "version": "0.0.1",
   "requirements": [
-    "the-keyspy==0.0.21",
+    "the-keyspy==0.0.22",
     "dataclasses-json==0.6.7"
   ]
 }
