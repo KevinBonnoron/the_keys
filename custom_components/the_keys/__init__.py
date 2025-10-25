@@ -28,16 +28,15 @@ async def async_setup_coordinator(hass: HomeAssistant, entry: ConfigEntry) -> Da
 
     async def async_update_data():
         """Fetch data from API."""
-        try:
-            devices = await hass.async_add_executor_job(api.get_devices)
-            for device in devices:
-                if isinstance(device, TheKeysLock):
+        devices = await hass.async_add_executor_job(api.get_devices)
+        for device in devices:
+            if isinstance(device, TheKeysLock):
+                try:
                     await hass.async_add_executor_job(device.retrieve_infos)
+                except Exception as e:
+                    _LOGGER.error("Error updating devices: %s", e)
 
-            return devices
-        except Exception as e:
-            _LOGGER.error("Error updating devices: %s", e)
-            return None
+        return devices
 
     coordinator = DataUpdateCoordinator(
         hass,
