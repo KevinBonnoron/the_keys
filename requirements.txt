@@ -102,7 +102,7 @@ typing-inspection==0.4.1
 typing_extensions==4.14.1
 uart-devices==0.1.1
 ulid-transform==1.4.0
-urllib3==2.5.0
+urllib3==2.6.0
 usb-devices==0.4.5
 voluptuous==0.15.2
 voluptuous-serialize==2.6.0
