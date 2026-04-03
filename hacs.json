@@ -1,6 +1,6 @@
 {
   "name": "The keys",
-  "hacs": "1.6.0",
+  "hacs": "2.0.5",
   "country": ["FR"],
-  "homeassistant": "2024.11.0"
+  "homeassistant": "2026.2.3"
 }

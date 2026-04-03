@@ -23,7 +23,7 @@ async def async_setup_coordinator(hass: HomeAssistant, entry: ConfigEntry) -> Da
     api = TheKeysApi(
         entry.data[CONF_USERNAME],
         entry.data[CONF_PASSWORD],
-        entry.data[CONF_GATEWAY_IP] or None,
+        entry.data.get(CONF_GATEWAY_IP),
     )
 
     async def async_update_data():
