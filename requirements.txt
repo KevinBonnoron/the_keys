@@ -1,6 +1,6 @@
 dataclasses_json==0.6.7
 homeassistant==2026.2.3
-the-keyspy==0.0.26
+the-keyspy==0.0.27
 voluptuous==0.15.2
 
 # Test
