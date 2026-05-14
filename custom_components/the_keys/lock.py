@@ -20,33 +20,28 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     entities = []
     for device in coordinator.data:
         if isinstance(device, TheKeysLock):
-            entities.append(TheKeysLockEntity(device))
+            entities.append(TheKeysLockEntity(coordinator, device))
 
-    async_add_entities(entities, update_before_add=True)
+    async_add_entities(entities)
 
 
 class TheKeysLockEntity(TheKeysEntity, LockEntity):
     """TheKeys lock device implementation."""
 
-    def __init__(self, device: TheKeysLock):
+    def __init__(self, coordinator, device: TheKeysLock):
         """Init a TheKeys lock entity."""
-        super().__init__(device=device)
+        super().__init__(coordinator, device=device)
         self._attr_unique_id = f"{self._device.id}_lock"
+
+    @property
+    def is_locked(self) -> bool:
+        """Return whether the lock is locked."""
+        return self._device.is_locked
 
     def lock(self, **kwargs):
         """Lock the device."""
         self._device.close()
-        self._attr_is_locked = True
 
     def unlock(self, **kwargs):
         """Unlock the device."""
         self._device.open()
-        self._attr_is_locked = False
-
-    def update(self) -> None:
-        """Update the device."""
-        try:
-            self._device.retrieve_infos()
-            self._attr_is_locked = self._device.is_locked
-        except Exception as e:
-            _LOGGER.error("Error updating lock: %s", e)

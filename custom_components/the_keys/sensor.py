@@ -21,7 +21,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
             if device.battery_level is not None:
                 entities.append(TheKeysLockBattery(coordinator, device))
 
-    async_add_entities(entities, update_before_add=True)
+    async_add_entities(entities)
 
 
 class TheKeysLockBattery(TheKeysEntity, SensorEntity):
@@ -29,7 +29,7 @@ class TheKeysLockBattery(TheKeysEntity, SensorEntity):
 
     def __init__(self, coordinator, device: TheKeysLock):
         """Init a TheKeys battery entity."""
-        super().__init__(device=device)
+        super().__init__(coordinator, device=device)
         self._attr_unique_id = f"{self._device.id}_battery"
         self._attr_device_class = SensorDeviceClass.BATTERY
         self._attr_state_class = SensorStateClass.MEASUREMENT

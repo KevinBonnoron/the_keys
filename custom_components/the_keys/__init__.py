@@ -26,9 +26,10 @@ async def async_setup_coordinator(hass: HomeAssistant, entry: ConfigEntry) -> Da
         entry.data.get(CONF_GATEWAY_IP),
     )
 
+    devices = await hass.async_add_executor_job(api.get_devices)
+
     async def async_update_data():
-        """Fetch data from API."""
-        devices = await hass.async_add_executor_job(api.get_devices)
+        """Refresh device state from the gateway."""
         for device in devices:
             if isinstance(device, TheKeysLock):
                 try:
